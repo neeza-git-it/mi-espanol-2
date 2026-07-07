@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Español 2</title>
+<style>
+:root{
+  --night:#123B2E; --paper:#F1F7F3; --card:#FFFFFF; --sun:#FFC53D; --coral:#FF5A5F;
+  --mint:#29C48F; --ink:#14231C; --muted:#5C6B62; --line:#DFE9E2; --radius:18px;
+  --display:-apple-system,'SF Pro Rounded','Segoe UI',system-ui,sans-serif;
+  --body:-apple-system,'Segoe UI',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--body);background:var(--night);color:var(--ink);display:flex;flex-direction:column;max-width:560px;margin:0 auto;min-height:100dvh}
+header{padding:16px 16px 12px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:8px}
+header .brand{font-family:var(--display);font-weight:800;font-size:1.15rem;line-height:1.05}
+header .brand span{color:var(--sun)}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 11px;font-size:.7rem;font-weight:600;color:#fff;white-space:nowrap}
+.chip b{color:var(--sun)}
+.langbtn{background:var(--sun);color:var(--night);border:none;border-radius:999px;padding:7px 12px;font-family:var(--body);font-weight:800;font-size:.72rem;cursor:pointer}
+main{flex:1;background:var(--paper);border-radius:26px 26px 0 0;padding:20px 16px 96px;overflow-y:auto}
+.screen{display:none}
+.screen.active{display:block}
+h2{font-family:var(--display);font-weight:800;font-size:1.3rem;margin-bottom:4px}
+.sub{color:var(--muted);font-size:.84rem;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.card h3{font-family:var(--display);font-weight:700;font-size:1rem;margin-bottom:4px}
+.card p{font-size:.85rem;color:var(--muted);line-height:1.5}
+.tag{display:inline-block;background:var(--night);color:var(--sun);font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 8px;margin-bottom:8px}
+.en{color:#7A8B80;font-size:.78rem;font-style:italic;display:none;line-height:1.45;margin-top:3px}
+body.showEN .en{display:block}
+.btn{display:block;width:100%;border:none;border-radius:14px;padding:14px;font-family:var(--body);font-size:.93rem;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:default}
+.btn-primary{background:var(--night);color:#fff}
+.btn-sun{background:var(--sun);color:var(--night)}
+.btn-ghost{background:transparent;color:var(--night);border:1.5px solid var(--night)}
+.btn-row{display:flex;gap:10px}
+.btn-row .btn{flex:1}
+.small{font-size:.77rem;color:var(--muted)}
+.hidden{display:none!important}
+.passage{font-size:.95rem;line-height:1.75;white-space:pre-wrap}
+.q{margin-bottom:18px}
+.q .qt{font-weight:600;font-size:.9rem;margin-bottom:2px}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font-size:.87rem;margin-bottom:8px;cursor:pointer;font-family:var(--body)}
+.opt.sel{border-color:var(--night);background:#EDF5F0}
+.opt.right{border-color:var(--mint);background:#E8FAF3}
+.opt.wrong{border-color:var(--coral);background:#FFF0F0}
+.expl{font-size:.79rem;color:var(--muted);background:#F3F8F5;border-radius:10px;padding:10px;margin-top:4px;line-height:1.5}
+.scorebox{font-family:var(--display);font-weight:800;font-size:1.5rem;text-align:center;padding:8px 0 2px}
+.catrow{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:8px;-webkit-overflow-scrolling:touch}
+.cat{flex-shrink:0;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font-size:.8rem;font-weight:700;color:var(--ink);cursor:pointer;font-family:var(--body);white-space:nowrap}
+.cat.on{background:var(--night);color:var(--sun);border-color:var(--night)}
+.flash{background:var(--night);border-radius:var(--radius);min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:24px 16px;cursor:pointer;margin-bottom:12px;position:relative}
+.flash .word{font-family:var(--display);font-weight:800;font-size:1.7rem;line-height:1.2}
+.flash .side{position:absolute;top:12px;left:14px;font-size:.62rem;font-weight:800;letter-spacing:.12em;color:var(--sun)}
+.flash .hint{position:absolute;bottom:12px;font-size:.68rem;color:#9DBFAE}
+.flash .cnt{position:absolute;top:12px;right:14px;font-size:.68rem;color:#9DBFAE;font-weight:700}
+.speaker{background:var(--sun);color:var(--night);border:none;border-radius:50%;width:46px;height:46px;font-size:1.2rem;cursor:pointer;margin-top:14px}
+.rules{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+.rules th,.rules td{border:1px solid var(--line);padding:7px 9px;text-align:center}
+.rules th{background:#EDF5F0;font-weight:700}
+.rules td b{color:var(--night)}
+.logrow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.83rem}
+.logrow:last-child{border-bottom:none}
+.logrow .lt{color:var(--muted);font-size:.72rem;white-space:nowrap}
+.logrow .ls{font-weight:800;color:var(--night);white-space:nowrap}
+.feedback{white-space:pre-wrap;font-size:.86rem;line-height:1.6}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;background:var(--card);border-top:1px solid var(--line);display:flex;padding:8px 2px calc(8px + env(safe-area-inset-bottom))}
+nav button{flex:1;background:none;border:none;font-family:var(--body);font-size:.62rem;font-weight:600;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0}
+nav button .ico{font-size:1.15rem;line-height:1}
+nav button.on{color:var(--night)}
+nav button.on::after{content:'';width:16px;height:3px;border-radius:3px;background:var(--sun);margin-top:2px}
+</style>
+</head>
+<body class="showEN">
+
+<header>
+  <div class="brand">Mi Español 2<br><span>Vocabulario y verbos</span></div>
+  <div class="chip"><b id="sessScore">0</b> pts &middot; <b id="sessCount">0</b> done</div>
+  <button class="langbtn" id="langBtn" data-act="toggleEN">EN: ON</button>
+</header>
+
+<main>
+
+<section class="screen active" id="scr-vocab">
+  <h2>Vocabulario</h2>
+  <p class="sub">Toca la tarjeta para ver el inglés. Toca &#128266; para escuchar.<span class="en">Tap the card to flip Spanish/English. Tap the speaker to hear it. Then take the quiz for that category.</span></p>
+  <div class="catrow" id="catRow"></div>
+  <div class="flash" data-act="flipCard" id="flashCard">
+    <span class="side" id="flashSide">ESPAÑOL</span>
+    <span class="cnt" id="flashCnt"></span>
+    <div class="word" id="flashWord"></div>
+    <button class="speaker" data-act="sayCard">&#128266;</button>
+    <span class="hint">toca para voltear / tap to flip</span>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" data-act="prevCard">&#9664; Anterior</button>
+    <button class="btn btn-ghost" data-act="nextCard">Siguiente &#9654;</button>
+  </div>
+  <br>
+  <button class="btn btn-sun" data-act="startVocabQuiz">Quiz de esta categoría / Quiz this category</button>
+  <div id="vocabQuiz"></div>
+</section>
+
+<section class="screen" id="scr-verbos">
+  <h2>Verbos</h2>
+  <p class="sub">Conjuga verbos -ar, -er, -ir en el presente.<span class="en">Present-tense conjugation practice with the vocabulary she knows (chores, routine, health). 10 questions per round.</span></p>
+  <div class="card">
+    <span class="tag">Las terminaciones / The endings</span>
+    <table class="rules">
+      <tr><th></th><th>-ar<br>(lavar)</th><th>-er<br>(comer)</th><th>-ir<br>(vivir)</th></tr>
+      <tr><td><b>yo</b></td><td>lav<b>o</b></td><td>com<b>o</b></td><td>viv<b>o</b></td></tr>
+      <tr><td><b>tú</b></td><td>lav<b>as</b></td><td>com<b>es</b></td><td>viv<b>es</b></td></tr>
+      <tr><td><b>él / ella / usted</b></td><td>lav<b>a</b></td><td>com<b>e</b></td><td>viv<b>e</b></td></tr>
+      <tr><td><b>nosotros</b></td><td>lav<b>amos</b></td><td>com<b>emos</b></td><td>viv<b>imos</b></td></tr>
+      <tr><td><b>ellos / ellas</b></td><td>lav<b>an</b></td><td>com<b>en</b></td><td>viv<b>en</b></td></tr>
+    </table>
+  </div>
+  <button class="btn btn-primary" data-act="startVerbRound">Empezar ronda de 10 / Start round of 10</button>
+  <div id="verbWork"></div>
+</section>
+
+<section class="screen" id="scr-escuchar">
+  <h2>Escuchar</h2>
+  <p class="sub">Escucha la frase y elige la respuesta.<span class="en">She hears a short sentence (using her vocab) and answers a question about it. 5 per round, replay as many times as she wants.</span></p>
+  <button class="btn btn-primary" data-act="startListenRound">Empezar ronda de 5 / Start round of 5</button>
+  <div id="listenWork"></div>
+</section>
+
+<section class="screen" id="scr-leer">
+  <h2>Leer</h2>
+  <p class="sub">Lecturas cortas con sus palabras.<span class="en">Short readings built only from her units: routine, family and chores, and a sick day (body and health).</span></p>
+  <div id="readMenu"></div>
+  <div id="readWork"></div>
+</section>
+
+<section class="screen" id="scr-padres">
+  <h2>Padres <span style="font-size:.85rem;color:var(--muted);font-weight:600">/ Parents</span></h2>
+  <p class="sub"><span style="color:var(--ink)">This tab is in English.</span> What she practiced this session.</p>
+  <div class="card">
+    <span class="tag">Session activity log</span>
+    <div id="logBox"><p class="small">No activity yet. Each quiz or round she completes appears here with time and score.</p></div>
+  </div>
+  <div class="card">
+    <span class="tag">Session summary</span>
+    <p>Tap for a plain-English summary of this session with a suggestion for tomorrow.</p>
+    <br>
+    <button class="btn btn-sun" data-act="parentReport">Generate summary</button>
+    <div id="reportBox"></div>
+  </div>
+  <div class="card">
+    <span class="tag">Notes</span>
+    <p>This app covers her exact Spanish 2 units: family, daily routine, chores, furniture, body parts, health verbs (tomar la medicina, descansar, hacer ejercicio), and present-tense -ar/-er/-ir conjugation. A good daily session: 1 vocab quiz + 1 verb round + 1 listening round, about 15 minutes. The log resets when the app closes; screenshot the summary to keep a record. The EN button (top right) shows or hides English helper text.</p>
+  </div>
+</section>
+
+</main>
+
+<nav>
+  <button class="on" data-act="go" data-scr="vocab"><span class="ico">&#127183;</span>Vocab</button>
+  <button data-act="go" data-scr="verbos"><span class="ico">&#9997;</span>Verbos</button>
+  <button data-act="go" data-scr="escuchar"><span class="ico">&#127911;</span>Escuchar</button>
+  <button data-act="go" data-scr="leer"><span class="ico">&#128214;</span>Leer</button>
+  <button data-act="go" data-scr="padres"><span class="ico">&#128064;</span>Padres</button>
+</nav>
+
+<script>
+'use strict';
+window.addEventListener('error', function(e){
+  if(e && e.message === 'Script error.'){ e.preventDefault(); return true; }
+});
+function synthOK(){ try{ return 'speechSynthesis' in window && !!window.speechSynthesis; }catch(e){ return false; } }
+function synthCancel(){ try{ if(synthOK()) window.speechSynthesis.cancel(); }catch(e){} }
+function $(id){ return document.getElementById(id); }
+
+var S = { points:0, count:0, log:[] };
+
+/* ================= VOCAB BANK: her exact units ================= */
+var VOCAB = {
+  'La familia': [
+    {es:'el padre / el papá', en:'the father / dad'},
+    {es:'la madre / la mamá', en:'the mother / mom'},
+    {es:'los padres', en:'the parents'},
+    {es:'el hermano', en:'the brother'},
+    {es:'la hermana', en:'the sister'},
+    {es:'el abuelo', en:'the grandfather'},
+    {es:'la abuela', en:'the grandmother'},
+    {es:'el tío', en:'the uncle'},
+    {es:'la tía', en:'the aunt'},
+    {es:'el primo / la prima', en:'the cousin (m/f)'},
+    {es:'el hijo / la hija', en:'the son / the daughter'},
+    {es:'el esposo / la esposa', en:'the husband / the wife'}
+  ],
+  'La rutina diaria': [
+    {es:'levantarse', en:'to get up'},
+    {es:'desayunar', en:'to eat breakfast'},
+    {es:'almorzar', en:'to eat lunch'},
+    {es:'cenar', en:'to eat dinner'},
+    {es:'estudiar', en:'to study'},
+    {es:'leer un libro', en:'to read a book'},
+    {es:'escribir la tarea', en:'to write the homework'},
+    {es:'ver la televisión', en:'to watch TV'},
+    {es:'escuchar música', en:'to listen to music'},
+    {es:'llegar a la escuela', en:'to arrive at school'},
+    {es:'regresar a casa', en:'to return home'},
+    {es:'dormir ocho horas', en:'to sleep eight hours'}
+  ],
+  'Los quehaceres': [
+    {es:'lavar los platos', en:'to wash the dishes'},
+    {es:'limpiar el cuarto', en:'to clean the room'},
+    {es:'pasar la aspiradora', en:'to vacuum'},
+    {es:'sacar la basura', en:'to take out the trash'},
+    {es:'hacer la cama', en:'to make the bed'},
+    {es:'cortar el césped', en:'to mow the lawn'},
+    {es:'poner la mesa', en:'to set the table'},
+    {es:'lavar la ropa', en:'to wash the clothes'},
+    {es:'cocinar la cena', en:'to cook dinner'},
+    {es:'arreglar el cuarto', en:'to tidy up the room'},
+    {es:'dar de comer al perro', en:'to feed the dog'},
+    {es:'ayudar en casa', en:'to help at home'}
+  ],
+  'Los muebles': [
+    {es:'la cama', en:'the bed'},
+    {es:'la mesa', en:'the table'},
+    {es:'la silla', en:'the chair'},
+    {es:'el sofá', en:'the sofa / couch'},
+    {es:'la lámpara', en:'the lamp'},
+    {es:'el escritorio', en:'the desk'},
+    {es:'la cómoda', en:'the dresser'},
+    {es:'el espejo', en:'the mirror'},
+    {es:'la alfombra', en:'the rug / carpet'},
+    {es:'las cortinas', en:'the curtains'},
+    {es:'el estante', en:'the shelf / bookcase'},
+    {es:'el sillón', en:'the armchair'}
+  ],
+  'El cuerpo': [
+    {es:'la cabeza', en:'the head'},
+    {es:'el pelo', en:'the hair'},
+    {es:'los ojos', en:'the eyes'},
+    {es:'la nariz', en:'the nose'},
+    {es:'la boca', en:'the mouth'},
+    {es:'las orejas', en:'the ears'},
+    {es:'el brazo', en:'the arm'},
+    {es:'la mano', en:'the hand'},
+    {es:'los dedos', en:'the fingers'},
+    {es:'la pierna', en:'the leg'},
+    {es:'el pie', en:'the foot'},
+    {es:'el estómago', en:'the stomach'},
+    {es:'la garganta', en:'the throat'},
+    {es:'la espalda', en:'the back'}
+  ],
+  'La salud': [
+    {es:'tomar la medicina', en:'to take medicine'},
+    {es:'descansar', en:'to rest'},
+    {es:'hacer ejercicio', en:'to exercise'},
+    {es:'beber agua', en:'to drink water'},
+    {es:'ir al médico', en:'to go to the doctor'},
+    {es:'estar enfermo / enferma', en:'to be sick (m/f)'},
+    {es:'estar cansado / cansada', en:'to be tired (m/f)'},
+    {es:'tener dolor de cabeza', en:'to have a headache'},
+    {es:'tener fiebre', en:'to have a fever'},
+    {es:'me duele el estómago', en:'my stomach hurts'},
+    {es:'sentirse bien', en:'to feel well'},
+    {es:'sentirse mal', en:'to feel bad'}
+  ]
+};
+
+/* ================= VERB BANK: regular -ar/-er/-ir with her vocab ================= */
+var VERBS = [
+  {inf:'lavar', en:'to wash', obj:'los platos', obj_en:'the dishes'},
+  {inf:'limpiar', en:'to clean', obj:'el cuarto', obj_en:'the room'},
+  {inf:'tomar', en:'to take', obj:'la medicina', obj_en:'the medicine'},
+  {inf:'descansar', en:'to rest', obj:'después de la escuela', obj_en:'after school'},
+  {inf:'cocinar', en:'to cook', obj:'la cena', obj_en:'dinner'},
+  {inf:'ayudar', en:'to help', obj:'a mi madre', obj_en:'my mom'},
+  {inf:'estudiar', en:'to study', obj:'para el examen', obj_en:'for the test'},
+  {inf:'desayunar', en:'to eat breakfast', obj:'a las siete', obj_en:'at seven'},
+  {inf:'mirar', en:'to watch', obj:'la televisión', obj_en:'TV'},
+  {inf:'escuchar', en:'to listen to', obj:'música', obj_en:'music'},
+  {inf:'comer', en:'to eat', obj:'el almuerzo', obj_en:'lunch'},
+  {inf:'beber', en:'to drink', obj:'agua', obj_en:'water'},
+  {inf:'leer', en:'to read', obj:'un libro', obj_en:'a book'},
+  {inf:'correr', en:'to run', obj:'en el parque', obj_en:'in the park'},
+  {inf:'aprender', en:'to learn', obj:'español', obj_en:'Spanish'},
+  {inf:'vivir', en:'to live', obj:'en una casa grande', obj_en:'in a big house'},
+  {inf:'escribir', en:'to write', obj:'la tarea', obj_en:'the homework'},
+  {inf:'abrir', en:'to open', obj:'la ventana', obj_en:'the window'},
+  {inf:'compartir', en:'to share', obj:'el cuarto con mi hermana', obj_en:'the room with my sister'}
+];
+var ENDINGS = { ar:['o','as','a','amos','an'], er:['o','es','e','emos','en'], ir:['o','es','e','imos','en'] };
+var PRONOUNS = [
+  {p:'Yo', i:0, en:'I'},
+  {p:'Tú', i:1, en:'you'},
+  {p:'Él', i:2, en:'he'},
+  {p:'Ella', i:2, en:'she'},
+  {p:'Mi hermano', i:2, en:'my brother'},
+  {p:'Mi abuela', i:2, en:'my grandmother'},
+  {p:'Nosotros', i:3, en:'we'},
+  {p:'Ellos', i:4, en:'they'},
+  {p:'Mis padres', i:4, en:'my parents'}
+];
+
+/* ================= LISTENING BANK ================= */
+var LISTEN = [
+  {frase:'Mi hermano lava los platos después de la cena.', q:'Who washes the dishes?', opts:['My brother','My sister','My grandmother'], c:0, ex:"'Mi hermano lava los platos' = my brother washes the dishes."},
+  {frase:'Mi abuela descansa en el sofá por la tarde.', q:'Where does grandma rest?', opts:['In the bed','On the sofa','In the kitchen'], c:1, ex:"'Descansa en el sofá' = she rests on the sofa."},
+  {frase:'Yo tomo la medicina porque me duele la cabeza.', q:'Why does the person take medicine?', opts:['Their stomach hurts','They have a fever','Their head hurts'], c:2, ex:"'Me duele la cabeza' = my head hurts."},
+  {frase:'Mis padres hacen ejercicio en el parque los sábados.', q:'When do the parents exercise?', opts:['On Saturdays','Every morning','On Sundays'], c:0, ex:"'Los sábados' = on Saturdays."},
+  {frase:'La lámpara está en el escritorio de mi cuarto.', q:'Where is the lamp?', opts:['On the table','On the desk','On the shelf'], c:1, ex:"'En el escritorio' = on the desk."},
+  {frase:'Mi tía cocina la cena y mi primo pone la mesa.', q:'What does the cousin do?', opts:['Cooks dinner','Washes clothes','Sets the table'], c:2, ex:"'Mi primo pone la mesa' = my cousin sets the table."},
+  {frase:'Yo me levanto a las seis y desayuno con mi familia.', q:'What happens at six?', opts:['The person gets up','The person eats dinner','The person goes to school'], c:0, ex:"'Me levanto a las seis' = I get up at six."},
+  {frase:'Mi hermana está enferma. Tiene fiebre y descansa en la cama.', q:'How is the sister?', opts:['She is tired','She is sick','She is happy'], c:1, ex:"'Está enferma' = she is sick, with a fever ('tiene fiebre')."},
+  {frase:'Nosotros sacamos la basura y pasamos la aspiradora los domingos.', q:'What chores do they do on Sundays?', opts:['Wash dishes and cook','Mow the lawn','Take out trash and vacuum'], c:2, ex:"'Sacamos la basura y pasamos la aspiradora' = we take out the trash and vacuum."},
+  {frase:'Me duele el estómago, por eso bebo agua y no como mucho.', q:'What hurts?', opts:['The stomach','The throat','The back'], c:0, ex:"'Me duele el estómago' = my stomach hurts."},
+  {frase:'El espejo está encima de la cómoda, cerca de las cortinas.', q:'Where is the mirror?', opts:['Under the bed','Above the dresser','On the door'], c:1, ex:"'Encima de la cómoda' = above / on top of the dresser."},
+  {frase:'Después de hacer la tarea, veo la televisión con mi padre.', q:'What does the person do first?', opts:['Watches TV','Eats dinner','Does homework'], c:2, ex:"'Después de hacer la tarea' = after doing homework, so homework comes first."}
+];
+
+/* ================= READING BANK ================= */
+var READS = [
+  {titulo:'La rutina de Elena', titulo_en:"Elena's routine",
+   texto:'Me llamo Elena y tengo catorce años. Todos los días me levanto a las seis y media. Primero desayuno cereal con leche en la cocina. Luego llego a la escuela a las ocho.\n\nDespués de las clases, regreso a casa a las tres. Descanso un poco en el sofá y luego estudio en mi escritorio. Escribo la tarea y leo un libro.\n\nPor la noche, ceno con mi familia a las siete. Después veo la televisión con mi hermano. Me duermo a las diez porque necesito dormir ocho horas.',
+   texto_en:"My name is Elena and I am fourteen. Every day I get up at six thirty. First I eat cereal with milk in the kitchen. Then I arrive at school at eight. After classes, I return home at three. I rest a little on the sofa and then study at my desk. I write my homework and read a book. At night, I eat dinner with my family at seven. Then I watch TV with my brother. I fall asleep at ten because I need to sleep eight hours.",
+   preguntas:[
+    {q:'¿A qué hora se levanta Elena?', q_en:'What time does Elena get up?', opciones:['A las seis y media','A las ocho','A las siete'], opciones_en:['At 6:30','At 8:00','At 7:00'], correcta:0, explicacion_en:"'Me levanto a las seis y media' = I get up at six thirty."},
+    {q:'¿Dónde estudia Elena?', q_en:'Where does Elena study?', opciones:['En el sofá','En su escritorio','En la cocina'], opciones_en:['On the sofa','At her desk','In the kitchen'], correcta:1, explicacion_en:"'Estudio en mi escritorio' = I study at my desk. The sofa is where she rests."},
+    {q:'¿Por qué se duerme a las diez?', q_en:'Why does she sleep at ten?', opciones:['Está enferma','Tiene mucha tarea','Necesita dormir ocho horas'], opciones_en:['She is sick','She has lots of homework','She needs 8 hours of sleep'], correcta:2, explicacion_en:"'Porque necesito dormir ocho horas' = because I need to sleep eight hours."}
+   ]},
+  {titulo:'Los quehaceres de la familia López', titulo_en:'The Lopez family chores',
+   texto:'En la familia López, todos ayudan en casa los sábados. La madre lava la ropa y el padre corta el césped.\n\nMarco, el hijo mayor, limpia su cuarto y pasa la aspiradora en la sala. Su hermana Lucía hace las camas y saca la basura. El abuelo cocina el almuerzo para toda la familia.\n\nDespués del almuerzo, Marco lava los platos y Lucía da de comer al perro. Por la tarde, toda la familia descansa en la sala. Los sábados son días de mucho trabajo, pero la casa está muy limpia.',
+   texto_en:"In the Lopez family, everyone helps at home on Saturdays. The mother washes the clothes and the father mows the lawn. Marco, the oldest son, cleans his room and vacuums the living room. His sister Lucia makes the beds and takes out the trash. The grandfather cooks lunch for the whole family. After lunch, Marco washes the dishes and Lucia feeds the dog. In the afternoon, the whole family rests in the living room. Saturdays are hard-working days, but the house is very clean.",
+   preguntas:[
+    {q:'¿Qué hace el padre?', q_en:'What does the father do?', opciones:['Lava la ropa','Corta el césped','Cocina el almuerzo'], opciones_en:['Washes clothes','Mows the lawn','Cooks lunch'], correcta:1, explicacion_en:"'El padre corta el césped' = the father mows the lawn. Mom washes clothes, grandpa cooks."},
+    {q:'¿Quién saca la basura?', q_en:'Who takes out the trash?', opciones:['Lucía','Marco','El abuelo'], opciones_en:['Lucia','Marco','The grandfather'], correcta:0, explicacion_en:"'Lucía hace las camas y saca la basura' = Lucia makes the beds and takes out the trash."},
+    {q:'¿Qué hace Marco después del almuerzo?', q_en:'What does Marco do after lunch?', opciones:['Da de comer al perro','Pasa la aspiradora','Lava los platos'], opciones_en:['Feeds the dog','Vacuums','Washes the dishes'], correcta:2, explicacion_en:"'Marco lava los platos' after lunch. Lucia feeds the dog."}
+   ]},
+  {titulo:'Un día enfermo', titulo_en:'A sick day',
+   texto:'Hoy no voy a la escuela porque estoy enfermo. Me duele la garganta y también me duele la cabeza. Tengo un poco de fiebre.\n\nMi madre me lleva al médico por la mañana. El médico dice: "Necesitas descansar, beber mucha agua y tomar la medicina dos veces al día".\n\nAhora descanso en mi cama. Mi abuela cocina una sopa de pollo deliciosa. Por la tarde me siento un poco mejor. Mañana no voy a hacer ejercicio, pero creo que puedo regresar a la escuela.',
+   texto_en:"Today I am not going to school because I am sick. My throat hurts and my head also hurts. I have a slight fever. My mom takes me to the doctor in the morning. The doctor says: 'You need to rest, drink lots of water, and take the medicine twice a day.' Now I rest in my bed. My grandmother cooks a delicious chicken soup. In the afternoon I feel a little better. Tomorrow I will not exercise, but I think I can return to school.",
+   preguntas:[
+    {q:'¿Qué le duele?', q_en:'What hurts?', opciones:['La garganta y la cabeza','El estómago y el pie','La espalda y el brazo'], opciones_en:['Throat and head','Stomach and foot','Back and arm'], correcta:0, explicacion_en:"'Me duele la garganta y también me duele la cabeza' = throat and head hurt."},
+    {q:'¿Cuántas veces al día toma la medicina?', q_en:'How often does he take medicine?', opciones:['Una vez','Dos veces','Tres veces'], opciones_en:['Once','Twice','Three times'], correcta:1, explicacion_en:"'Tomar la medicina dos veces al día' = take the medicine twice a day."},
+    {q:'¿Quién cocina la sopa?', q_en:'Who cooks the soup?', opciones:['La madre','El médico','La abuela'], opciones_en:['The mother','The doctor','The grandmother'], correcta:2, explicacion_en:"'Mi abuela cocina una sopa de pollo' = my grandmother cooks a chicken soup."}
+   ]}
+];
+
+/* ================= event wiring ================= */
+var ACTIONS = {};
+document.addEventListener('click', function(e){
+  var el = e.target.closest ? e.target.closest('[data-act]') : null;
+  if(!el || el.disabled) return;
+  var fn = ACTIONS[el.getAttribute('data-act')];
+  if(fn){ try{ fn(el); }catch(err){} }
+});
+ACTIONS.toggleEN = function(){
+  document.body.classList.toggle('showEN');
+  $('langBtn').textContent = document.body.classList.contains('showEN') ? 'EN: ON' : 'EN: OFF';
+};
+ACTIONS.go = function(el){
+  var name = el.getAttribute('data-scr');
+  var screens = document.querySelectorAll('.screen');
+  for(var i=0;i<screens.length;i++) screens[i].classList.remove('active');
+  $('scr-'+name).classList.add('active');
+  var navs = document.querySelectorAll('nav button');
+  for(var j=0;j<navs.length;j++) navs[j].classList.remove('on');
+  el.classList.add('on');
+  synthCancel();
+};
+function addScore(pts, activity, detail){
+  S.points += pts; S.count += 1;
+  $('sessScore').textContent = S.points; $('sessCount').textContent = S.count;
+  var t = new Date();
+  S.log.push({time: t.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), activity: activity, detail: detail, pts: pts});
+  renderLog();
+}
+function renderLog(){
+  if(!S.log.length) return;
+  $('logBox').innerHTML = S.log.map(function(l){
+    return '<div class="logrow"><span class="lt">'+l.time+'</span><span style="flex:1">'+l.activity+'<br><span class="small">'+l.detail+'</span></span><span class="ls">'+l.pts+' pts</span></div>';
+  }).join('');
+}
+
+/* ================= TTS ================= */
+var esVoice = null;
+function pickVoice(){
+  var vs = [];
+  try{ vs = window.speechSynthesis.getVoices() || []; }catch(e){}
+  esVoice = null;
+  for(var i=0;i<vs.length;i++){ if(/es[-_](MX|US|419)/i.test(vs[i].lang)){ esVoice = vs[i]; break; } }
+  if(!esVoice){ for(var j=0;j<vs.length;j++){ if(/^es/i.test(vs[j].lang)){ esVoice = vs[j]; break; } } }
+}
+try{ if(synthOK()){ pickVoice(); window.speechSynthesis.onvoiceschanged = pickVoice; } }catch(e){}
+function speak(text, rate){
+  if(!synthOK()) return;
+  synthCancel();
+  try{
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = esVoice ? esVoice.lang : 'es-ES';
+    if(esVoice) u.voice = esVoice;
+    u.rate = rate || 0.8;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ================= helpers ================= */
+function shuffle(a){ var arr=a.slice(); for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; } return arr; }
+var picks = {};
+function renderQuestions(qs, prefix){
+  var letters = ['A','B','C'];
+  return qs.map(function(q,i){
+    var enline = q.q_en ? '<div class="en">'+q.q_en+'</div>' : '';
+    return '<div class="q" id="'+prefix+'q'+i+'"><div class="qt">'+(i+1)+'. '+q.q+'</div>'+enline+
+      q.opciones.map(function(o,j){
+        var oen = (q.opciones_en && document.body) ? '<span class="en">'+ (q.opciones_en[j]||'') +'</span>' : '';
+        return '<button class="opt" data-act="pick" data-prefix="'+prefix+'" data-i="'+i+'" data-j="'+j+'">'+letters[j]+'. '+o+(q.opciones_en?oen:'')+'</button>';
+      }).join('')+
+      '<div class="expl hidden" id="'+prefix+'e'+i+'"></div></div>';
+  }).join('');
+}
+ACTIONS.pick = function(el){
+  var prefix = el.getAttribute('data-prefix');
+  var i = el.getAttribute('data-i');
+  var j = parseInt(el.getAttribute('data-j'),10);
+  picks[prefix+i] = j;
+  var sibs = el.parentElement.querySelectorAll('.opt');
+  for(var k=0;k<sibs.length;k++) sibs[k].classList.remove('sel');
+  el.classList.add('sel');
+};
+function gradeMC(qs, prefix, resultId, activityName){
+  var right=0;
+  qs.forEach(function(q,i){
+    var box = $(prefix+'q'+i);
+    var opts = box.querySelectorAll('.opt');
+    for(var j=0;j<opts.length;j++){
+      opts[j].disabled = true;
+      if(j===q.correcta) opts[j].classList.add('right');
+      else if(picks[prefix+i]===j) opts[j].classList.add('wrong');
+    }
+    if(picks[prefix+i]===q.correcta) right++;
+    var e = $(prefix+'e'+i);
+    e.textContent = q.explicacion_en;
+    e.classList.remove('hidden');
+  });
+  var pct = Math.round(right/qs.length*100);
+  addScore(right*10, activityName, right+'/'+qs.length+' correct ('+pct+'%)');
+  $(resultId).innerHTML = '<div class="card"><div class="scorebox">'+right+' / '+qs.length+' &middot; '+pct+'%</div><p style="text-align:center" class="small">'+(pct===100?'¡Perfecto!':pct>=70?'¡Muy bien! Read the explanations for the missed ones.':'Read the explanations, then try another round.')+'</p></div>';
+}
+
+/* ================= VOCAB tab ================= */
+var curCat = 'La familia';
+var cardIdx = 0;
+var flipped = false;
+function renderCats(){
+  var names = Object.keys(VOCAB);
+  $('catRow').innerHTML = names.map(function(n){
+    return '<button class="cat'+(n===curCat?' on':'')+'" data-act="setCat" data-cat="'+n+'">'+n+'</button>';
+  }).join('');
+}
+ACTIONS.setCat = function(el){
+  curCat = el.getAttribute('data-cat');
+  cardIdx = 0; flipped = false;
+  renderCats(); renderCard();
+  $('vocabQuiz').innerHTML = '';
+};
+function renderCard(){
+  var list = VOCAB[curCat];
+  var item = list[cardIdx];
+  $('flashSide').textContent = flipped ? 'ENGLISH' : 'ESPAÑOL';
+  $('flashWord').textContent = flipped ? item.en : item.es;
+  $('flashCnt').textContent = (cardIdx+1)+' / '+list.length;
+}
+ACTIONS.flipCard = function(){ flipped = !flipped; renderCard(); };
+ACTIONS.sayCard = function(){ speak(VOCAB[curCat][cardIdx].es, 0.8); };
+ACTIONS.prevCard = function(){ var n=VOCAB[curCat].length; cardIdx=(cardIdx-1+n)%n; flipped=false; renderCard(); };
+ACTIONS.nextCard = function(){ var n=VOCAB[curCat].length; cardIdx=(cardIdx+1)%n; flipped=false; renderCard(); };
+
+var vocabQs = null;
+ACTIONS.startVocabQuiz = function(){
+  var list = shuffle(VOCAB[curCat]).slice(0,8);
+  vocabQs = list.map(function(item){
+    var toEN = Math.random() < 0.6;
+    var pool = shuffle(VOCAB[curCat].filter(function(x){ return x.es !== item.es; })).slice(0,2);
+    var correctText = toEN ? item.en : item.es;
+    var opts = shuffle([correctText].concat(pool.map(function(p){ return toEN ? p.en : p.es; })));
+    return {
+      q: toEN ? '¿Qué significa "'+item.es+'"?' : '¿Cómo se dice "'+item.en+'" en español?',
+      q_en: toEN ? 'What does "'+item.es+'" mean?' : 'How do you say "'+item.en+'" in Spanish?',
+      opciones: opts,
+      correcta: opts.indexOf(correctText),
+      explicacion_en: item.es+' = '+item.en
+    };
+  });
+  $('vocabQuiz').innerHTML =
+    '<br><div class="card">'+renderQuestions(vocabQs,'V')+'</div>'+
+    '<button class="btn btn-primary" data-act="gradeVocab">Corregir / Check</button>'+
+    '<div id="vocabResult"></div>';
+};
+ACTIONS.gradeVocab = function(){ gradeMC(vocabQs,'V','vocabResult','Vocab quiz: '+curCat); };
+
+/* ================= VERBOS tab ================= */
+var verbQs = null;
+ACTIONS.startVerbRound = function(){
+  var qs = [];
+  var used = {};
+  while(qs.length < 10){
+    var v = VERBS[Math.floor(Math.random()*VERBS.length)];
+    var pr = PRONOUNS[Math.floor(Math.random()*PRONOUNS.length)];
+    var key = v.inf+'|'+pr.p;
+    if(used[key]) continue;
+    used[key] = true;
+    var conj = v.inf.slice(-2);
+    var stem = v.inf.slice(0,-2);
+    var ends = ENDINGS[conj];
+    var correct = stem + ends[pr.i];
+    var wrongEnds = shuffle(ends.filter(function(x,idx){ return idx !== pr.i; })).slice(0,2);
+    var opts = shuffle([correct].concat(wrongEnds.map(function(w){ return stem+w; })));
+    qs.push({
+      q: pr.p+' ______ '+v.obj+'.  ('+v.inf+')',
+      q_en: pr.en+' + '+v.inf+' ('+v.en+' '+v.obj_en+')',
+      opciones: opts,
+      correcta: opts.indexOf(correct),
+      explicacion_en: pr.p+' + '+v.inf+' ('+conj+' verb) takes -'+ends[pr.i]+': '+correct+'. Sentence: '+pr.p+' '+correct+' '+v.obj+'.'
+    });
+  }
+  verbQs = qs;
+  $('verbWork').innerHTML =
+    '<br><div class="card">'+renderQuestions(verbQs,'B')+'</div>'+
+    '<button class="btn btn-primary" data-act="gradeVerbs">Corregir / Check</button>'+
+    '<div id="verbResult"></div>';
+};
+ACTIONS.gradeVerbs = function(){ gradeMC(verbQs,'B','verbResult','Verb conjugation round'); };
+
+/* ================= ESCUCHAR tab ================= */
+var listenQs = null;
+ACTIONS.startListenRound = function(){
+  var items = shuffle(LISTEN).slice(0,5);
+  listenQs = items.map(function(it){
+    return { q: it.q, opciones: it.opts, correcta: it.c, explicacion_en: it.ex, frase: it.frase };
+  });
+  $('listenWork').innerHTML = '<br>' + listenQs.map(function(q,i){
+    var letters = ['A','B','C'];
+    return '<div class="card"><div class="q" id="Lq'+i+'">'+
+      '<button class="btn btn-sun" data-act="playItem" data-i="'+i+'" style="margin-bottom:10px">&#9654; Escuchar frase '+(i+1)+' / Play sentence '+(i+1)+'</button>'+
+      '<div class="qt">'+q.q+'</div>'+
+      q.opciones.map(function(o,j){
+        return '<button class="opt" data-act="pick" data-prefix="L" data-i="'+i+'" data-j="'+j+'">'+letters[j]+'. '+o+'</button>';
+      }).join('')+
+      '<div class="expl hidden" id="Le'+i+'"></div></div></div>';
+  }).join('') +
+  '<button class="btn btn-primary" data-act="gradeListen">Corregir / Check</button>'+
+  '<div id="listenResult"></div>';
+};
+ACTIONS.playItem = function(el){
+  var i = parseInt(el.getAttribute('data-i'),10);
+  speak(listenQs[i].frase, 0.75);
+};
+ACTIONS.gradeListen = function(){
+  gradeMC(listenQs,'L','listenResult','Listening round');
+  for(var i=0;i<listenQs.length;i++){
+    var e = $('Le'+i);
+    e.textContent = 'Heard: "'+listenQs[i].frase+'" , '+listenQs[i].explicacion_en;
+  }
+};
+
+/* ================= LEER tab ================= */
+var curRead = null;
+function renderReadMenu(){
+  $('readMenu').innerHTML = READS.map(function(r,i){
+    return '<div class="card"><h3>'+r.titulo+'</h3><p class="small en">'+r.titulo_en+'</p><br><button class="btn btn-primary" data-act="openRead" data-i="'+i+'">Leer / Read</button></div>';
+  }).join('');
+}
+ACTIONS.openRead = function(el){
+  var i = parseInt(el.getAttribute('data-i'),10);
+  curRead = READS[i];
+  $('readMenu').classList.add('hidden');
+  $('readWork').innerHTML =
+    '<div class="card"><h3>'+curRead.titulo+'</h3><p class="small en">'+curRead.titulo_en+'</p><br><div class="passage">'+curRead.texto+'</div>'+
+    '<p class="small" style="margin-top:10px"><button class="btn btn-ghost" data-act="revealTrans" style="padding:9px">Show English translation</button></p>'+
+    '<div class="passage hidden" id="transBox" style="margin-top:10px;font-size:.85rem;color:var(--muted)">'+curRead.texto_en+'</div></div>'+
+    '<div class="card">'+renderQuestions(curRead.preguntas,'R')+'</div>'+
+    '<button class="btn btn-primary" data-act="gradeRead">Corregir / Check</button>'+
+    '<div id="readResult"></div>'+
+    '<br><button class="btn btn-ghost" data-act="backRead">Volver / Back</button>';
+};
+ACTIONS.revealTrans = function(){ $('transBox').classList.toggle('hidden'); };
+ACTIONS.gradeRead = function(){ gradeMC(curRead.preguntas,'R','readResult','Reading: '+curRead.titulo_en); };
+ACTIONS.backRead = function(){ $('readWork').innerHTML=''; $('readMenu').classList.remove('hidden'); };
+
+/* ================= PADRES ================= */
+ACTIONS.parentReport = function(){
+  if(!S.log.length){
+    $('reportBox').innerHTML = '<br><p class="small">No activity yet. Have her complete at least one quiz first.</p>';
+    return;
+  }
+  var byType = {};
+  S.log.forEach(function(l){
+    var k = l.activity.split(':')[0];
+    if(!byType[k]) byType[k] = [];
+    byType[k].push(l);
+  });
+  var out = 'Session summary: '+S.count+' activit'+(S.count===1?'y':'ies')+' completed, '+S.points+' points. ';
+  var names = Object.keys(byType);
+  names.forEach(function(k){
+    out += k+': '+byType[k].map(function(l){ return l.detail; }).join('; ')+'. ';
+  });
+  var avg = function(arr){ return arr.reduce(function(a,l){return a+l.pts;},0)/arr.length; };
+  if(names.length > 1){
+    names.sort(function(a,b){ return avg(byType[b])-avg(byType[a]); });
+    out += 'Strongest today: '+names[0]+'. Suggestion for tomorrow: one extra round of '+names[names.length-1].toLowerCase()+'.';
+  }
+  $('reportBox').innerHTML = '<br><div class="feedback" style="background:#F3F8F5;border-radius:12px;padding:12px">'+out+'</div><br><p class="small">Screenshot this to keep a daily record.</p>';
+};
+
+/* ================= init ================= */
+renderCats();
+renderCard();
+renderReadMenu();
+</script>
+</body>
+</html>
